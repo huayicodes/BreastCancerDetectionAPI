@@ -1,4 +1,4 @@
-# BreastCancerDetection - practicing a data challenge 
+# Data Challenge: BreastCancerDetection
 Classified highly imbalanced breast cancer biopsy results with a logistic regression model, explored what features contribute to malignancy, FP &amp; FN predictions.  
 
 ## The Questions: 
