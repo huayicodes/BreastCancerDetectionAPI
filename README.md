@@ -8,8 +8,8 @@ You belong to the data team at a local research hospital. You've been tasked wit
 - How would a physician use your product?
 - There is a non-zero cost in time and money to collect each feature about a given cell. How would you go about determining the most cost-effective method of detecting malignancy?
 
-**The final project**:
-BreastCancerDetector is an API that will return the prediction based on the input cell parameters. 
+**The final product**:
+BreastCancerDetector is an **API** that will return the prediction based on the input cell parameters. 
 
 Example input: 
 ```
