@@ -1,4 +1,5 @@
-# BreastCancerDetector - an API that predicts malignancy based on features of biopsied breast cells.
+# BreastCancerDetector 
+**- an API that predicts malignancy based on features of biopsied breast cells.**
 
 ## Introduction 
 **Descriptions of the Data Challenge**
