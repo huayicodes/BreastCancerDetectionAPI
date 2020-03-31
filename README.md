@@ -47,8 +47,7 @@ As Uniformity of Cell Size & Uniformity of Cell Shape are highly correlated (as 
     <img src="/Fig/Correlation.png" width="600" height="450" />
 </p> 
 
-
-By analysing parameter importance, 3 parameters captures most of the predict power of the model: 
+By analyzing parameter importance, 3 parameters capture most of the predictive power of the model: 
 - Bland Chromatin
 - Uniformity (the average between Uniformity of Cell Size & Uniformity of Cell Shape)
 - Bare Nuclei
