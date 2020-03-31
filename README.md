@@ -1,6 +1,7 @@
-# BreastCancerDetector -a data challenge practice
+# BreastCancerDetector - an API that predicts malignancy based on features of biopsied breast cells.
 
-## Introduction
+## Introduction 
+**Descriptions of the Data Challenge**
 You belong to the data team at a local research hospital. You've been tasked with developing a means to help doctors diagnose breast cancer. You've been given data about biopsied breast cells; where it is benign (not harmful) or malignant (cancerous).
 
 - What features of a cell are the largest drivers of malignancy? Build a model that predicts whether a given biopsied breast cell is benign or malignant.
