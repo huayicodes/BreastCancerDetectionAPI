@@ -15,7 +15,7 @@ BreastCancerDetector is an **API** that will return the prediction based on the 
 
 Example input: 
 ```
-curl -d '{ "ID": 752904, "Clump Thickness": 10, "Uniformity of Cell Size": 1, "Uniformity of Cell Shape": 1, "Marginal Adhesion": 1, "Single Epithelial Cell Size": 2, "Bare Nuclei": 10, "Bland Chromatin": 5, "Normal Nucleoli": 4, 'Mitoses': 1 }' http://127.0.0.1:5000
+curl -d '{ "ID": 752904, "Clump Thickness": 10, "Uniformity of Cell Size": 1, "Uniformity of Cell Shape": 1, "Marginal Adhesion": 1, "Single Epithelial Cell Size": 2, "Bare Nuclei": 10, "Bland Chromatin": 5, "Normal Nucleoli": 4, "Mitoses": 1 }' http://127.0.0.1:5000
 ```
 Example output: 
 ```
@@ -27,7 +27,7 @@ Example file name: "predictions_03182020_1616.json". Timestamp: MonthDayYear_Hou
 **Instructions to run the API**
 * clone the repo to local machine
 * cd to the folder
-* In the terminal, run python api.py
+* In the terminal, run: python api.py
 * In a separate terminal, test with sample input as described above
 * 4 out of the 10 values are required: 
   - "ID"
