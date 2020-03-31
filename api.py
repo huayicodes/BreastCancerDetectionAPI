@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import joblib
 import json
+import argparse
 
 app = Flask(__name__)
 api = Api(
@@ -19,60 +20,78 @@ def load_model():
     
 @app.route('/', methods = ['POST'])       
 def result():
-    if request.method == 'POST':
-        # setup parameters 
-        Clump_Thickness = 0; Marginal_Adhesion = 0; S_E_C_S = 0; 
-        Normal_Nucleoli= 0; Mitoses = 0; U_C_Size = 0; U_C_Shape =0;
-        # the following lines handle input exceptions
-        try:
-            user_query = request.get_json(force=True)
-            ID = user_query['ID']
-            Bland_Chromatin = user_query['Bland Chromatin']
-            Bare_Nuclei= user_query['Bare Nuclei']
-            # check either 'Uniformity of Cell Size' or 'Uniformity of Cell Shape' has been provided
-            try:
-                U_C_Size  = user_query['Uniformity of Cell Size']
-            except:
-                try:
-                    U_C_Shape  = user_query['Uniformity of Cell Shape']
-                except:
-                    return 'Need to provide either Uniformity of Cell Size or Uniformity of Cell Shape'
-        except:
-            return 'Insufficient data. Please refer to README for example data format.'
-        try:
-            # parse out all the none-required data.
-            Clump_Thickness = user_query['Clump Thickness'] 
-            Marginal_Adhesion = user_query['Marginal Adhesion'] 
-            S_E_C_S = user_query['Single Epithelial Cell Size']
-            Normal_Nucleoli = user_query['Normal Nucleoli']
-            Mitoses = user_query['Mitoses']
-        except:  
-            pass
-            
-        # convert input data into model input
-        if U_C_Size:
-            Uniformity = U_C_Size
-        else:
-            Uniformity = U_C_Shape        
-        input_para= np.array([Clump_Thickness, Marginal_Adhesion, S_E_C_S, Bare_Nuclei, Bland_Chromatin, Normal_Nucleoli, Mitoses, Uniformity]).reshape(1, -1)
-        # make a prediction
-        prediction = classifier.predict(input_para)
-        confidence = classifier.predict_proba(input_para)[int(prediction)]
-        
-        # format output
-        output_result =  {}
-        print(confidence)
-        output_result['Prediction']= ['Benign','Malignant'][int(prediction[0])]
-        output_result['Confidence'] = round(confidence[int(prediction[0])],2)
-        
-        # save, name file after ID      
-        out_path = 'Output/predictions_'+str(ID)+'.json'
-        json.dump(output_result, open(out_path, 'w'))
-        return output_result
-    else:
+    # check request format
+    if request.method != 'POST':
         return('Error: Wrong input format. Please refer to README for sample query format.')
         
+    # setup features 
+    requiredFeatures = ['ID', 'Bland Chromatin', 'Bare Nuclei']
+    interchangeableFeatures = ['Uniformity of Cell Size', 'Uniformity of Cell Shape']
+    optionalFeatures = ['Clump Thickness', 'Marginal Adhesion', 
+                        'Single Epithelial Cell Size', 'Normal Nucleoli', 'Mitoses']
+    cellFeatures = dict.fromkeys(requiredFeatures + optionalFeatures + interchangeableFeatures, 0)
+    
+    # check format of the input query
+    try: 
+        user_query = request.get_json(force=True)
+    except: 
+        return 'Error : wrong data format. Please refer to README for example data format.'
+    
+    # check for requiredFeatures    
+    for feature in requiredFeatures: 
+        try:  
+            cellFeatures[feature]  = user_query[feature]
+        except:  
+            return 'Error: please provide the following features: ID, Bland Chromatin, Bare Nuclei'
+    
+    # check if the at least one of the two interchangeableFeatures are present
+    present = 0 
+    for feature in interchangeableFeatures:
+        if feature in user_query.keys():
+            cellFeatures[feature] = user_query[feature]
+            present +=1
+    if not present: 
+        return 'Error: Need to provide either Uniformity of Cell Size or Uniformity of Cell Shape'
+     
+    # check optional features 
+    for feature in optionalFeatures: 
+        try:
+            cellFeatures[feature] =user_query[feature]
+        except:
+            pass
+           
+    # convert input data into model input
+    orderedList = ['Clump Thickness', 'Marginal Adhesion','Single Epithelial Cell Size', 'Bare Nuclei',
+                    'Bland Chromatin', 'Normal Nucleoli', 'Mitoses']  
+    if user_query['Uniformity of Cell Size']:
+        orderedList.append('Uniformity of Cell Size')
+    else:
+        orderedList.append('Uniformity of Cell Shape')
+    input_para= np.array([cellFeatures[i] for i in orderedList]).reshape(1, -1)
+    
+    # make a prediction
+    prediction = int(classifier.predict(input_para))
+    confidence = classifier.predict_proba(input_para)[prediction]
+    print(prediction)
+    
+    # format output
+    output_result =  {}
+    output_result['Prediction']= ['Benign','Malignant'][prediction]
+    output_result['Confidence'] = round(confidence[prediction],2)
+    
+    # save, name file after ID      
+    out_path = 'Output/predictions_'+str(cellFeatures['ID'])+'.json'
+    json.dump(output_result, open(out_path, 'w'))
+    return output_result
+    
+    
 if __name__ == '__main__':
+    # make it optional to define the port
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port", action="store", default="5000")
+    args = parser.parse_args()
+    port = int(args.port)
+    
     print('Loading the classifier model...')
     classifier = load_model() # load the model first
-    app.run(debug=True, host = '127.0.0.1', port='5000')
+    app.run(debug=True, host = '127.0.0.1', port=port)
