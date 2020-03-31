@@ -28,6 +28,7 @@ Example file name: "predictions_03182020_1616.json". Timestamp: MonthDayYear_Hou
 * clone the repo to local machine
 * cd to the folder
 * In the terminal, run: python api.py
+  - can define the port by: python api.py -p xxxx (default is 5000)
 * In a separate terminal, test with sample input as described above
 * 4 out of the 10 values are required: 
   - "ID"
