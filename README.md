@@ -2,7 +2,7 @@
 **-- an API that predicts malignancy based on features of biopsied breast cells.**
 
 ## Introduction 
-**Descriptions of the Data Challenge**
+***Descriptions of the Data Challenge*** <br>
 You belong to the data team at a local research hospital. You've been tasked with developing a means to help doctors diagnose breast cancer. You've been given data about biopsied breast cells; where it is benign (not harmful) or malignant (cancerous).
 
 - What features of a cell are the largest drivers of malignancy? Build a model that predicts whether a given biopsied breast cell is benign or malignant.
@@ -19,7 +19,7 @@ curl -d '{ "ID": 752904, "Clump Thickness": 10, "Uniformity of Cell Size": 1, "U
 ```
 Example output: 
 ```
-{ "Prediction": "Benign", "Confidence": 97.34% }
+{ "Prediction": "Benign", "Confidence": 0.98 }
 ```
 The predictions are saved in a timestamped json file under the folder "Output". 
 Example file name: "predictions_03182020_1616.json". Timestamp: MonthDayYear_HourMinute
@@ -29,10 +29,29 @@ Example file name: "predictions_03182020_1616.json". Timestamp: MonthDayYear_Hou
 * cd to the folder
 * In the terminal, run python api.py
 * In a separate terminal, test with sample input as described above
+* 4 out of the 10 values are required: 
+  - "ID"
+  - "Bland Chromatin"
+  - "Bare Nuclei"
+  - either "Uniformity of Cell Size" or "Uniformity of Cell Shape"
 
-# The Data
-9 features (all range from 1-10) + Class (4 for benign, 2 for malignant)
+## The Data
+9 features (all ranged 1-10) + Class (4 for benign, 2 for malignant)
 
-Clump Thickness, Uniformity of Cell Size, Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size, Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
+**Features**: Clump Thickness, Uniformity of Cell Size, Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size, Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
+
+## The Model
+Train a Logistic Regression model based on 8 out of the 9 parameters. <br> 
+As Uniformity of Cell Size & Uniformity of Cell Shape are highly correlated (as shown below), the model is trained based on their averaged values. In the API, the model only requires one of the two parameters to be present. 
+<p align="center">
+    <img src="/Fig/Correlation.png" width="600" height="450" />
+</p> 
+
+
+By analysing parameter importance, 3 parameters captures most of the predict power of the model: 
+- Bland Chromatin
+- Uniformity (the average between Uniformity of Cell Size & Uniformity of Cell Shape)
+- Bare Nuclei
+
 
 
