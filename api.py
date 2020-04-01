@@ -94,4 +94,4 @@ if __name__ == '__main__':
     
     print('Loading the classifier model...')
     classifier = load_model() # load the model first
-    app.run(debug=True, host = '127.0.0.1', port=port)
+    app.run(debug=False, host = '127.0.0.1', port=port)
