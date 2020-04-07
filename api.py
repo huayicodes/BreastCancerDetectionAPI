@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_restplus import Api
 import numpy as np
 import pandas as pd
@@ -12,11 +12,15 @@ api = Api(
     version="v1.0",
     title="BreastCancerDetector",
     description = 'Predict malignancy based on features of biopsied breast cells')
+
     
 def load_model():
-    # load model & vectorizer
+    # load model 
     classifier  = joblib.load('Model/clf_1.sav')
+    print('Loading the classifier model...')
     return classifier
+
+classifier = load_model() # load the model 
     
 @app.route('/', methods = ['POST'])       
 def result():
@@ -35,7 +39,7 @@ def result():
     try: 
         user_query = request.get_json(force=True)
     except: 
-        return 'Error : wrong data format. Please refer to README for example data format.'
+        return 'Error : Wrong data format. Please refer to README for example data format.'
     
     # check for requiredFeatures    
     for feature in requiredFeatures: 
@@ -63,7 +67,7 @@ def result():
     # convert input data into model input
     orderedList = ['Clump Thickness', 'Marginal Adhesion','Single Epithelial Cell Size', 'Bare Nuclei',
                     'Bland Chromatin', 'Normal Nucleoli', 'Mitoses']  
-    if user_query['Uniformity of Cell Size']:
+    if cellFeatures['Uniformity of Cell Size']:
         orderedList.append('Uniformity of Cell Size')
     else:
         orderedList.append('Uniformity of Cell Shape')
@@ -71,9 +75,8 @@ def result():
     
     # make a prediction
     prediction = int(classifier.predict(input_para))
-    confidence = classifier.predict_proba(input_para)[prediction]
-    print(prediction)
-    
+    confidence = classifier.predict_proba(input_para).flatten()
+   
     # format output
     output_result =  {}
     output_result['Prediction']= ['Benign','Malignant'][prediction]
@@ -91,7 +94,5 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--port", action="store", default="5000")
     args = parser.parse_args()
     port = int(args.port)
-    
-    print('Loading the classifier model...')
-    classifier = load_model() # load the model first
+   
     app.run(debug=False, host = '127.0.0.1', port=port)
