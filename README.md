@@ -36,6 +36,10 @@ Example file name: "predictions_03182020_1616.json". Timestamp: MonthDayYear_Hou
   - "Bare Nuclei"
   - either "Uniformity of Cell Size" or "Uniformity of Cell Shape"
 
+**Instructions to run unit testing**
+* cd to the folder
+* In the terminal, run: python tests.py OR python -m unittest 
+
 ## The Data
 9 features (all ranged 1-10) + Class (4 for benign, 2 for malignant)
 
